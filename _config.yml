@@ -3,17 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle: ''
-description: ''
+title: Lito
+subtitle: 一个爱跑步的程序员的碎碎念
+description: 18岁考上了大学,以为获得了自由。24岁大学毕业,以为财务自由了。如今,才发现。追求自由就是不自由
 keywords:
-author: John Doe
-language: en
-timezone: ''
+author: Lito
+language: zh-CN
+timezone: Asia/Chongqing
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
-url: http://example.com
+url: https://lito.tech
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
