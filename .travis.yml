@@ -6,8 +6,6 @@ cache: npm
 branches:
   only:
     - main  #11212
-script:
-  - hexo generate
 deploy:
   provider: pages
   skip-cleanup: true
