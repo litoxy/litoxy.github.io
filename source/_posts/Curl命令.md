@@ -2,7 +2,7 @@
 layout: curl
 title: 命令
 date: 2021-02-23 15:27:53
-tags:linux
+tags: linux
 ---
 [原始链接-阮一峰的网络日志-curl的用法指南](http://www.ruanyifeng.com/blog/2019/09/curl-reference.html)
 
