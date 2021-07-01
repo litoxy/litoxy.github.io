@@ -57,6 +57,227 @@
 
   
     
+    <h3 class="article-title"><a href="/2021/07/01/ssh/"><span>Remote-ssh can not connect unless delete .vscode-server folder on the remote every time using ssh</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2021/07/01/ssh/" rel="bookmark">
+        <time class="entry-date published" datetime="2021-07-01T05:36:34.000Z">
+          2021-07-01
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>新公司一切都是新的，操作系统也是。六年多的mac os,因为换了工作重新开始使用windows，刚开始各种不适应慢慢的也习惯了。</p>
+<p>公司的开发环境是linux，要求使用citrix Receiver 连接使用。那画面感觉回到了80年代大屁股显示器的时候。最后发现开发环境是可以使用SSH访问的，就在windows上安装了vscode然后使用 Remote Development开发。最近不知道什么原因总是频繁单开连接，多次输入密码无果。重启ide又可以了。</p>
+<p>然后在 <a target="_blank" rel="noopener" href="https://github.com/microsoft/vscode-remote-release">vocode remote</a>  的 issues 看到这样一条。<a target="_blank" rel="noopener" href="https://github.com/microsoft/vscode-remote-release/issues/2828">Remote-ssh can not connect unless delete .vscode-server folder on the remote every time using ssh.</a></p>
+<p>只要删除vscode-server 下面的Log文件就可以正常使用了。</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm ~<span class="regexp">/.vscode-server/</span>.*.log</span><br></pre></td></tr></table></figure>
+<p>另外也又人提到可以将<strong>vscode 更新到最新版本</strong>就可以解决这个问题。</p>
+<p>忽然,灵光一闪.我前两天跟新了最新,感觉问题是出在这个新的版本。以下是我的版本信息，如果有同学遇到相同问题可以尝试删除log文件。是否可以解决问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">版本: 1.57.1 (user setup)</span><br><span class="line">提交: 507ce72a4466fbb27b715c3722558bb15afa9f48</span><br><span class="line">日期: 2021-06-17T13:28:07.755Z</span><br><span class="line">Electron: 12.0.7</span><br><span class="line">Chrome: 89.0.4389.128</span><br><span class="line">Node.js: 14.16.0</span><br><span class="line">V8: 8.9.255.25-electron.0</span><br><span class="line">OS: Windows_NT x64 10.0.18363</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/vscode/">vscode</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2021/06/22/马拉松配速计算-转换器/"><span>马拉松配速计算/转换器</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2021/06/22/马拉松配速计算-转换器/" rel="bookmark">
+        <time class="entry-date published" datetime="2021-06-22T01:16:28.000Z">
+          2021-06-22
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <!-- 引入 WeUI CDN 链接 -->
+    <link crossorigin="anonymous"
+        integrity="sha512-Rstencoi9qmcbpxZWAO/f6OxbJWSCZsCiNTmieHobMmQ6QZSTEeVVvrgeDvWhGiH6qmnkxtJ5iYVHYjbsuumxA=="
+        href="https://lib.baomitu.com/weui/2.4.4/style/weui.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+
+    <div class="page">
+        <div class="weui-form">
+            <div class="weui-form__text-area">
+                <h2 class="weui-form__title">表单结构</h2>
+                <div class="weui-form__desc">展示表单页面的信息结构样式, 分别由头部区域/控件区域/提示区域/操作区域和底部信息区域组成。</div>
+            </div>
+            <div class="weui-form__control-area">
+                <div class="weui-cells__group weui-cells__group_form">
+                    <div class="weui-cells__title">表单组标题</div>
+                    <div class="weui-cells weui-cells_form">
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd"><label class="weui-label">微信号</label></div>
+                            <div class="weui-cell__bd">
+                                <input id="js_input" class="weui-input" placeholder="填写本人微信号" />
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd"><label class="weui-label">昵称</label></div>
+                            <div class="weui-cell__bd">
+                                <input id="js_input" class="weui-input" placeholder="填写本人微信号的昵称" />
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd"><label class="weui-label">联系电话</label></div>
+                            <div class="weui-cell__bd">
+                                <input id="js_input" class="weui-input" placeholder="填写绑定的电话号码" type="number"
+                                    pattern="[0-9]*" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-form__tips-area">
+                <p class="weui-form__tips">
+                    表单页提示，居中对齐
+                </p>
+            </div>
+            <div class="weui-form__opr-area">
+                <a class="weui-btn weui-btn_primary weui-btn_disabled" href="javascript:" id="showTooltips">确定</a>
+            </div>
+            <div class="weui-form__tips-area">
+                <p class="weui-form__tips">
+                    表单页提示，居中对齐
+                </p>
+            </div>
+            <div class="weui-form__extra-area">
+                <div class="weui-footer">
+                    <p class="weui-footer__links">
+                        <a href="javascript:" class="weui-footer__link">底部链接文本</a>
+                    </p>
+                    <p class="weui-footer__text">Copyright © 2008-2019 weui.io</p>
+                </div>
+            </div>
+        </div>
+        <div id="js_toast" style="display: none;">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+                <p class="weui-toast__content">已完成</p>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(function () {
+            var $toast = $('#js_toast');
+            var $input = $('#js_input');
+            $input.on('input', function () {
+                if ($input.val()) {
+                    $('#showTooltips').removeClass('weui-btn_disabled');
+                } else {
+                    $('#showTooltips').addClass('weui-btn_disabled');
+                }
+            });
+            $('#showTooltips').on('click', function () {
+                if ($(this).hasClass('weui-btn_disabled')) return;
+
+                // toptips的fixed, 如果有`animation`, `position: fixed`不生效
+                $('.page.cell').removeClass('slideIn');
+
+                $toast.fadeIn(100);
+                setTimeout(function () {
+                    $toast.fadeOut(100);
+                }, 2000);
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/马拉松/">马拉松</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2021/06/01/running/"><span>docker daemon is not running</span></a></h3>
     
   
