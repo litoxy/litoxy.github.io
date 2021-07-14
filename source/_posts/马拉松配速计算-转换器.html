@@ -21,64 +21,60 @@ tags: 马拉松
     <div class="page">
         <div class="weui-form">
             <div class="weui-form__text-area">
-                <h2 class="weui-form__title">表单结构</h2>
-                <div class="weui-form__desc">展示表单页面的信息结构样式, 分别由头部区域/控件区域/提示区域/操作区域和底部信息区域组成。</div>
+                <h2 class="weui-form__title">配速计算/转换器</h2>
+                <div class="weui-form__desc">经常跑马的人会经常用到计算不同配速下(半程)马拉松的完赛时间,或者跑步机选手也会经常去转换速度和配速。之前一直用易跑网的工具,最近发现他们不维护了。所有有了这个东西。为了方便输入，几乎去掉了小数点以及冒号之类的东西~
+                有任何为题可以 <a href="mailto:lito.zheng@qq.com"> Email </a> 我</div>
             </div>
-            <div class="weui-form__control-area">
-                <div class="weui-cells__group weui-cells__group_form">
-                    <div class="weui-cells__title">表单组标题</div>
-                    <div class="weui-cells weui-cells_form">
-                        <div class="weui-cell weui-cell_active">
-                            <div class="weui-cell__hd"><label class="weui-label">微信号</label></div>
-                            <div class="weui-cell__bd">
-                                <input id="js_input" class="weui-input" placeholder="填写本人微信号" />
-                            </div>
-                        </div>
-                        <div class="weui-cell weui-cell_active">
-                            <div class="weui-cell__hd"><label class="weui-label">昵称</label></div>
-                            <div class="weui-cell__bd">
-                                <input id="js_input" class="weui-input" placeholder="填写本人微信号的昵称" />
-                            </div>
-                        </div>
-                        <div class="weui-cell weui-cell_active">
-                            <div class="weui-cell__hd"><label class="weui-label">联系电话</label></div>
-                            <div class="weui-cell__bd">
-                                <input id="js_input" class="weui-input" placeholder="填写绑定的电话号码" type="number"
-                                    pattern="[0-9]*" />
-                            </div>
-                        </div>
+          <div class="weui-cells__title">配速计算器</div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><label class="weui-label">配速</label></div>
+                    <div class="weui-cell__bd">
+                        <input id="js_input" class="weui-input" placeholder="请输入配速(如:530/500等)" />
                     </div>
                 </div>
-            </div>
-            <div class="weui-form__tips-area">
-                <p class="weui-form__tips">
-                    表单页提示，居中对齐
-                </p>
+                
+                <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><label class="weui-label">距离</label></div>
+                    <div class="weui-cell__bd">
+                        <input id="js_input" class="weui-input" placeholder="请输入距离(单位米)" />
+                    </div>
+                </div>
+                
+                <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><label class="weui-label">时间</label></div>
+                    <div class="weui-cell__bd">
+                        <input id="js_input" class="weui-input" placeholder="请输入时间(格式000000)" />
+                    </div>
+                </div>
+
+
+
+                <!-- <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><label class="weui-label">昵称</label></div>
+                    <div class="weui-cell__bd">
+                        <input id="js_input" class="weui-input" placeholder="填写本人微信号的昵称" />
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><label class="weui-label">联系电话</label></div>
+                    <div class="weui-cell__bd">
+                        <input id="js_input" class="weui-input" placeholder="填写绑定的电话号码" type="number"
+                            pattern="[0-9]*" />
+                    </div>
+                </div> -->
             </div>
             <div class="weui-form__opr-area">
-                <a class="weui-btn weui-btn_primary weui-btn_disabled" href="javascript:" id="showTooltips">确定</a>
-            </div>
-            <div class="weui-form__tips-area">
-                <p class="weui-form__tips">
-                    表单页提示，居中对齐
-                </p>
-            </div>
-            <div class="weui-form__extra-area">
-                <div class="weui-footer">
-                    <p class="weui-footer__links">
-                        <a href="javascript:" class="weui-footer__link">底部链接文本</a>
-                    </p>
-                    <p class="weui-footer__text">Copyright © 2008-2019 weui.io</p>
-                </div>
+            <a class="weui-btn weui-btn_primary weui-btn_disabled" href="javascript:" id="showTooltips">走你</a>
             </div>
         </div>
-        <div id="js_toast" style="display: none;">
-            <div class="weui-mask_transparent"></div>
-            <div class="weui-toast">
-                <i class="weui-icon-success-no-circle weui-icon_toast"></i>
-                <p class="weui-toast__content">已完成</p>
-            </div>
-        </div>
+       
+
+       <div class="weui-form__tips-area">
+      <p class="weui-form__tips">
+        开发中...
+      </p>
+    </div>
     </div>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"
         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
