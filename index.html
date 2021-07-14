@@ -85,7 +85,8 @@
 <p>另外也又人提到可以将<strong>vscode 更新到最新版本</strong>就可以解决这个问题。</p>
 <p>忽然,灵光一闪.我前两天跟新了最新,感觉问题是出在这个新的版本。以下是我的版本信息，如果有同学遇到相同问题可以尝试删除log文件。是否可以解决问题</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">版本: 1.57.1 (user setup)</span><br><span class="line">提交: 507ce72a4466fbb27b715c3722558bb15afa9f48</span><br><span class="line">日期: 2021-06-17T13:28:07.755Z</span><br><span class="line">Electron: 12.0.7</span><br><span class="line">Chrome: 89.0.4389.128</span><br><span class="line">Node.js: 14.16.0</span><br><span class="line">V8: 8.9.255.25-electron.0</span><br><span class="line">OS: Windows_NT x64 10.0.18363</span><br></pre></td></tr></table></figure>
-
+<p>另外，官方提供了一个脚本文件。也可以尝试下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line"># Script to update VScode</span><br><span class="line"></span><br><span class="line">#grab the current commit id</span><br><span class="line">COMMIT_ID&#x3D;&#96;ls -At  ~&#x2F;.vscode-server&#x2F;bin | head -n 1&#96;</span><br><span class="line">cd ~&#x2F;.vscode-server&#x2F;bin&#x2F;$COMMIT_ID</span><br><span class="line"></span><br><span class="line">#unlock it</span><br><span class="line">rm .&#x2F;vscode-remote-lock*</span><br><span class="line"></span><br><span class="line">#download package and unpack it</span><br><span class="line">wget https:&#x2F;&#x2F;update.code.visualstudio.com&#x2F;commit:$COMMIT_ID&#x2F;server-linux-x64&#x2F;stable</span><br><span class="line">tar -xvzf .&#x2F;stable --strip-components 1</span><br><span class="line"></span><br><span class="line">if [ $? -eq 0 ]; then</span><br><span class="line">	rm .&#x2F;stable</span><br><span class="line">	echo &quot;Successfully updated VScode&quot;</span><br><span class="line">else</span><br><span class="line">  echo &quot;Failed to download and untar VScode update&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
 
       
@@ -157,64 +158,60 @@
     <div class="page">
         <div class="weui-form">
             <div class="weui-form__text-area">
-                <h2 class="weui-form__title">表单结构</h2>
-                <div class="weui-form__desc">展示表单页面的信息结构样式, 分别由头部区域/控件区域/提示区域/操作区域和底部信息区域组成。</div>
+                <h2 class="weui-form__title">配速计算/转换器</h2>
+                <div class="weui-form__desc">经常跑马的人会经常用到计算不同配速下(半程)马拉松的完赛时间,或者跑步机选手也会经常去转换速度和配速。之前一直用易跑网的工具,最近发现他们不维护了。所有有了这个东西。为了方便输入，几乎去掉了小数点以及冒号之类的东西~
+                有任何为题可以 <a href="mailto:lito.zheng@qq.com"> Email </a> 我</div>
             </div>
-            <div class="weui-form__control-area">
-                <div class="weui-cells__group weui-cells__group_form">
-                    <div class="weui-cells__title">表单组标题</div>
-                    <div class="weui-cells weui-cells_form">
-                        <div class="weui-cell weui-cell_active">
-                            <div class="weui-cell__hd"><label class="weui-label">微信号</label></div>
-                            <div class="weui-cell__bd">
-                                <input id="js_input" class="weui-input" placeholder="填写本人微信号" />
-                            </div>
-                        </div>
-                        <div class="weui-cell weui-cell_active">
-                            <div class="weui-cell__hd"><label class="weui-label">昵称</label></div>
-                            <div class="weui-cell__bd">
-                                <input id="js_input" class="weui-input" placeholder="填写本人微信号的昵称" />
-                            </div>
-                        </div>
-                        <div class="weui-cell weui-cell_active">
-                            <div class="weui-cell__hd"><label class="weui-label">联系电话</label></div>
-                            <div class="weui-cell__bd">
-                                <input id="js_input" class="weui-input" placeholder="填写绑定的电话号码" type="number"
-                                    pattern="[0-9]*" />
-                            </div>
-                        </div>
+          <div class="weui-cells__title">配速计算器</div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><label class="weui-label">配速</label></div>
+                    <div class="weui-cell__bd">
+                        <input id="js_input" class="weui-input" placeholder="请输入配速(如:530/500等)" />
                     </div>
                 </div>
-            </div>
-            <div class="weui-form__tips-area">
-                <p class="weui-form__tips">
-                    表单页提示，居中对齐
-                </p>
+                
+                <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><label class="weui-label">距离</label></div>
+                    <div class="weui-cell__bd">
+                        <input id="js_input" class="weui-input" placeholder="请输入距离(单位米)" />
+                    </div>
+                </div>
+                
+                <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><label class="weui-label">时间</label></div>
+                    <div class="weui-cell__bd">
+                        <input id="js_input" class="weui-input" placeholder="请输入时间(格式000000)" />
+                    </div>
+                </div>
+
+
+
+                <!-- <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><label class="weui-label">昵称</label></div>
+                    <div class="weui-cell__bd">
+                        <input id="js_input" class="weui-input" placeholder="填写本人微信号的昵称" />
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><label class="weui-label">联系电话</label></div>
+                    <div class="weui-cell__bd">
+                        <input id="js_input" class="weui-input" placeholder="填写绑定的电话号码" type="number"
+                            pattern="[0-9]*" />
+                    </div>
+                </div> -->
             </div>
             <div class="weui-form__opr-area">
-                <a class="weui-btn weui-btn_primary weui-btn_disabled" href="javascript:" id="showTooltips">确定</a>
-            </div>
-            <div class="weui-form__tips-area">
-                <p class="weui-form__tips">
-                    表单页提示，居中对齐
-                </p>
-            </div>
-            <div class="weui-form__extra-area">
-                <div class="weui-footer">
-                    <p class="weui-footer__links">
-                        <a href="javascript:" class="weui-footer__link">底部链接文本</a>
-                    </p>
-                    <p class="weui-footer__text">Copyright © 2008-2019 weui.io</p>
-                </div>
+            <a class="weui-btn weui-btn_primary weui-btn_disabled" href="javascript:" id="showTooltips">走你</a>
             </div>
         </div>
-        <div id="js_toast" style="display: none;">
-            <div class="weui-mask_transparent"></div>
-            <div class="weui-toast">
-                <i class="weui-icon-success-no-circle weui-icon_toast"></i>
-                <p class="weui-toast__content">已完成</p>
-            </div>
-        </div>
+       
+
+       <div class="weui-form__tips-area">
+      <p class="weui-form__tips">
+        开发中...
+      </p>
+    </div>
     </div>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"
         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
