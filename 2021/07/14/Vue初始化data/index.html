@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>碎碎念 | Lito | 一个爱跑步的程序员的碎碎念</title>
+  <title>Vue初始化data | Lito | 一个爱跑步的程序员的碎碎念</title>
 
   
   <meta name="author" content="Lito">
@@ -14,12 +14,15 @@
   
 
   
+  
+  <meta name="keywords" content="vue">
+  
 
   <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  
+  <meta property="og:title" content="Vue初始化data"/>
 
   <meta property="og:site_name" content="Lito"/>
 
@@ -52,54 +55,68 @@
 </header>
 
     <main class="site-main posts-loop">
-    
+    <article>
 
-<article>
-
-  <h2 class="article-title  tag">碎碎念</h2>
-
-  <div class="archive">
-    
-      <div class="title archive">
-        <div class="archive-post">
-          <time datetime="2021-10-13T05:01:29.000Z">
-            <a href="/2021/10/13/与失眠共舞/">2021-10-13</a>
-          </time>
-          
-            <h3 class="archive-title"><a href="/2021/10/13/与失眠共舞/"><span>与失眠共舞</span></a></h3>
-          
-        </div>
-      </div>
-    
-      <div class="post archive">
-        <div class="archive-post">
-          <time datetime="2021-06-01T02:25:30.000Z">
-            <a href="/2021/06/01/最近/">2021-06-01</a>
-          </time>
-          
-            <h3 class="archive-title"><a href="/2021/06/01/最近/"><span>最近</span></a></h3>
-          
-        </div>
-      </div>
-    
-      <div class="post archive">
-        <div class="archive-post">
-          <time datetime="2021-02-20T07:56:30.000Z">
-            <a href="/2021/02/20/2021重新开始/">2021-02-20</a>
-          </time>
-          
-            <h3 class="archive-title"><a href="/2021/02/20/2021重新开始/"><span>2021重新开始</span></a></h3>
-          
-        </div>
-      </div>
-    
-    <nav class="pagination">
   
+    
+    <h3 class="article-title"><span>Vue初始化data</span></h3>
+    
   
-</nav>
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2021/07/14/Vue初始化data/" rel="bookmark">
+        <time class="entry-date published" datetime="2021-07-14T09:41:26.000Z">
+          2021-07-14
+        </time>
+      </a>
+    </span>
   </div>
 
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p> 相信很多使用Vue开发项目的同学都会遇到这样一个问题。列表下拉刷新的时候,需要将列表信息以及相关的分页信息都初始化。之前的做法是会在声明一个initial data，下拉刷新前重新用initialdata设置data.</p>
+<p>之前在看vue的api的时候发现有一个名为<a target="_blank" rel="noopener" href="https://cn.vuejs.org/v2/api/index.html#vm-options">$options</a>的property.官方给出的定义是</p>
+<blockquote>
+<p>用于当前 Vue 实例的初始化选项。需要在选项中包含自定义 property 时会有用处：</p>
+</blockquote>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/vue/">vue</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
 </article>
+
+  
+
+
+
+
+
+
     </main>
 
     <footer class="site-footer">
