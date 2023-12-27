@@ -104,11 +104,14 @@
                         <input id="js_input" class="weui-input" placeholder="请输入利润,必须是数字哦~" />
                     </div>
                 </div>
+               <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><label class="weui-label">提成</label></div>
+                    <div class="weui-cell__bd"  id="iosDialog2bd">
+                       
+                    </div>
+                </div>
             </div>
-            <div class="weui-form__opr-area"><br/>
-                <a class="weui-btn weui-btn_primary weui-btn_disabled" href="javascript:" id="showTooltips">Go</a>
-                <h3 id="">提成:<span id="iosDialog2bd"></span></h3>
-            </div>
+          
         </div>
 
 
@@ -168,7 +171,7 @@
 
                 res += diff;
             }
-            return res;
+            return Math.round(res);
         }
         $(function() {
             var $toast = $('#js_toast');
