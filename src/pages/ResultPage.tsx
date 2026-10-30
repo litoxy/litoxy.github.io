@@ -1,6 +1,8 @@
+import { useState } from 'react'
+import { RadarChart } from '../components/RadarChart'
 import { StickFigureCanvas } from '../components/StickFigureCanvas'
 import { buildAdvice } from '../lib/advice'
-import type { SessionRecord } from '../lib/types'
+import type { ComparisonResult, SessionRecord } from '../lib/types'
 
 interface Props {
   session: SessionRecord
@@ -10,7 +12,19 @@ interface Props {
 
 export function ResultPage({ session, onBack, onReplay }: Props) {
   const { comparisonResult: c } = session
-  const advice = buildAdvice(session.features, c)
+  const [selectedId, setSelectedId] = useState(c.bestMatchId)
+  const selected =
+    c.allMatches.find((m) => m.id === selectedId) ?? c.allMatches[0]
+
+  // 维度列表与改进建议随所选参考跑者联动
+  const scoped: ComparisonResult = {
+    bestMatchId: selected.id,
+    bestMatchName: selected.name,
+    similarity: selected.similarity,
+    perMetric: selected.perMetric,
+    allMatches: c.allMatches,
+  }
+  const advice = buildAdvice(session.features, scoped)
   const weakest = advice.filter((a) => a.level !== 'good').slice(0, 3)
   const good = advice.filter((a) => a.level === 'good')
 
@@ -23,9 +37,32 @@ export function ResultPage({ session, onBack, onReplay }: Props) {
       </header>
 
       <div className="match-block">
-        <p className="match-score">{c.similarity}</p>
+        <p className="match-score">{selected.similarity}</p>
         <p className="match-copy">
-          最接近参考跑者 · {c.bestMatchName}
+          与 {selected.name} 的跑姿相似度
+        </p>
+      </div>
+
+      <div className="runner-tabs" role="tablist" aria-label="参考跑者对比">
+        {c.allMatches.map((m) => (
+          <button
+            key={m.id}
+            type="button"
+            role="tab"
+            aria-selected={m.id === selectedId}
+            className={`runner-tab ${m.id === selectedId ? 'active' : ''}`}
+            onClick={() => setSelectedId(m.id)}
+          >
+            <span className="rt-name">{m.name}</span>
+            <span className="rt-sim">{m.similarity}%</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="radar-wrap">
+        <RadarChart perMetric={selected.perMetric} referenceName={selected.name} />
+        <p className="radar-caption">
+          虚线为 {selected.name} 基准轮廓，黄铜区域是你的得分——<strong>凹陷处就是差距所在</strong>
         </p>
       </div>
 
@@ -49,7 +86,7 @@ export function ResultPage({ session, onBack, onReplay }: Props) {
 
       {weakest.length > 0 && (
         <div className="advice-block">
-          <p className="advice-title">改进建议</p>
+          <p className="advice-title">改进建议 · 对标 {selected.name}</p>
           <ul className="advice-list">
             {weakest.map((a) => (
               <li key={a.key}>
@@ -62,7 +99,7 @@ export function ResultPage({ session, onBack, onReplay }: Props) {
       )}
       {good.length > 0 && (
         <p className="advice-good-line">
-          {good.map((a) => a.label).join('、')}已接近参考水平，继续保持 👍
+          {good.map((a) => a.label).join('、')}已接近 {selected.name} 的水平，继续保持 👍
         </p>
       )}
 

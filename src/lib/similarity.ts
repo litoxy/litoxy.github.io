@@ -30,12 +30,9 @@ function metricScore(
   return Math.max(0, 1 - diff)
 }
 
+/** 与所有参考跑者逐一比较：每位跑者都有整体相似度 + 逐维度得分 */
 export function compareToGolden(features: PostureFeatures): ComparisonResult {
-  let best = goldenRunners[0]
-  let bestSim = -1
-  let bestPer = {} as Record<keyof PostureFeatures, number>
-
-  for (const runner of goldenRunners) {
+  const matches = goldenRunners.map((runner) => {
     let weighted = 0
     let totalW = 0
     const perMetric = {} as Record<keyof PostureFeatures, number>
@@ -51,18 +48,20 @@ export function compareToGolden(features: PostureFeatures): ComparisonResult {
       totalW += WEIGHTS[key]
     }
 
-    const sim = Math.round((weighted / totalW) * 100)
-    if (sim > bestSim) {
-      bestSim = sim
-      best = runner
-      bestPer = perMetric
+    return {
+      id: runner.id,
+      name: runner.name,
+      similarity: Math.round((weighted / totalW) * 100),
+      perMetric,
     }
-  }
+  }).sort((a, b) => b.similarity - a.similarity)
 
+  const best = matches[0]
   return {
     bestMatchId: best.id,
     bestMatchName: best.name,
-    similarity: bestSim,
-    perMetric: bestPer,
+    similarity: best.similarity,
+    perMetric: best.perMetric,
+    allMatches: matches,
   }
 }

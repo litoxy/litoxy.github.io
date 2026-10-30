@@ -40,11 +40,20 @@ export interface PostureFeatures {
   symmetry: number
 }
 
+export interface RunnerMatch {
+  id: string
+  name: string
+  similarity: number
+  perMetric: Record<keyof PostureFeatures, number>
+}
+
 export interface ComparisonResult {
   bestMatchId: string
   bestMatchName: string
   similarity: number
   perMetric: Record<keyof PostureFeatures, number>
+  /** 与所有参考跑者的匹配结果（按相似度降序） */
+  allMatches: RunnerMatch[]
 }
 
 export interface SessionRecord {
