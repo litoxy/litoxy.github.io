@@ -448,9 +448,14 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
               setSlide(Math.max(0, Math.min(SLIDES.length - 1, i)))
             }}
           >
-            {SLIDES.map((s) => (
+            {SLIDES.map((s, i) => (
               <figure key={s.src} className="slide">
-                <img src={s.src} alt={s.alt} loading="lazy" />
+                <img
+                  src={s.src}
+                  alt={s.alt}
+                  draggable={false}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                />
               </figure>
             ))}
           </div>
@@ -470,7 +475,10 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
             ))}
           </div>
           <p className="slide-hint">
-            优秀运动员的跑姿由这些角度支撑 —— 你的视频将被逐帧测量同样的指标
+            <span className="slide-count">
+              {slide + 1}/{SLIDES.length}
+            </span>
+            左右滑动看示例 · 优秀跑姿由这些角度支撑，你的视频会被逐帧测量同样指标
           </p>
           <div className="guide-card">
             <p className="guide-title">拍摄要点</p>

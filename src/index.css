@@ -564,6 +564,7 @@ button:focus-visible {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   min-height: 0;
 }
 
@@ -596,6 +597,11 @@ button:focus-visible {
   width: 100%;
   height: 100%;
   object-fit: contain; /* 完整显示，绝不裁剪 */
+  /* 禁止长按拖拽/系统图片菜单导致图片脱离幻灯片 */
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  pointer-events: none;
 }
 
 .slide-dots {
@@ -628,6 +634,20 @@ button:focus-visible {
   font-size: 0.78rem;
   line-height: 1.5;
   color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.slide-count {
+  flex: 0 0 auto;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  padding: 0.1rem 0.42rem;
+  border-radius: 999px;
+  background: rgba(20, 32, 24, 0.08);
+  color: var(--ink);
 }
 
 /* 拍摄要点：常显卡片，占满首屏剩余空间，不折叠 */
@@ -1122,8 +1142,9 @@ button:focus-visible {
 
 /* ---------- 首页拍摄要点：淡化 + 避让底部按钮 ---------- */
 .page.capture .guide-card {
+  flex: 0 0 auto;
   justify-content: flex-start;
-  padding: 0.9rem 1.1rem 2rem;
+  padding: 0.9rem 1.1rem 1rem;
   background: linear-gradient(158deg, rgba(28, 42, 34, 0.55), rgba(15, 23, 18, 0.5));
   box-shadow: inset 0 0 0 1px rgba(228, 197, 106, 0.1);
 }
