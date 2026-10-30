@@ -136,6 +136,11 @@ button:focus-visible {
     0 0 0 1px rgba(228, 197, 106, 0.18);
 }
 
+/* idle 时取景区不渲染（无灰色大框），但 video/canvas 仍挂载以保证 ref 可用 */
+.stage.idle {
+  display: none;
+}
+
 .stage-video,
 .stage-overlay {
   position: absolute;

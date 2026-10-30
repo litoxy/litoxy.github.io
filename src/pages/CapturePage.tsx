@@ -430,27 +430,25 @@ export function CapturePage({ onSaved }: Props) {
         </div>
       </header>
 
-      {phase !== 'idle' && (
-        <div className="stage live">
-          <video ref={videoRef} playsInline muted className="stage-video" />
-          <canvas ref={overlayRef} className="stage-overlay" />
-          {phase === 'recording' && (
-            <div className="rec-badge" aria-live="polite">
-              {elapsed.toFixed(1)}s
-            </div>
-          )}
-          {phase === 'analyzing' && mode === 'file' && (
-            <div className="rec-badge soft" aria-live="polite">
-              {progress}%
-            </div>
-          )}
-          {phase === 'loading' && (
-            <div className="stage-status" role="status" aria-live="polite">
-              正在准备姿态识别…
-            </div>
-          )}
-        </div>
-      )}
+      <div className={`stage ${phase !== 'idle' ? 'live' : 'idle'}`}>
+        <video ref={videoRef} playsInline muted className="stage-video" />
+        <canvas ref={overlayRef} className="stage-overlay" />
+        {phase === 'recording' && (
+          <div className="rec-badge" aria-live="polite">
+            {elapsed.toFixed(1)}s
+          </div>
+        )}
+        {phase === 'analyzing' && mode === 'file' && (
+          <div className="rec-badge soft" aria-live="polite">
+            {progress}%
+          </div>
+        )}
+        {phase === 'loading' && (
+          <div className="stage-status" role="status" aria-live="polite">
+            正在准备姿态识别…
+          </div>
+        )}
+      </div>
 
       <input
         ref={fileInputRef}
