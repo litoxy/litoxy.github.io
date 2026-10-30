@@ -1024,3 +1024,11 @@ button:focus-visible {
 .delta-fill {
   min-width: 6px;
 }
+
+/* 历史页空态火柴人：限定尺寸（.glyph 尺寸样式此前被误清理） */
+.empty-block .glyph {
+  width: 56px;
+  height: 84px;
+  color: var(--ink-soft);
+  opacity: 0.45;
+}
