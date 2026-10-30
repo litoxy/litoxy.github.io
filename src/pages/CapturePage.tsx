@@ -6,16 +6,16 @@ import { estimateFrame, getDetector } from '../lib/pose'
 import { drawSkeleton, skeletonThumbnail } from '../lib/skeletonDraw'
 import { looksLikeVideoFile, seekVideo, waitVideoEvent } from '../lib/media'
 import type { SessionRecord, SkeletonFrame } from '../lib/types'
-import slideGround from '../assets/examples/slide-ground.jpg'
-import slideSagittal from '../assets/examples/slide-sagittal.jpg'
-import slideSwing from '../assets/examples/slide-swing.jpg'
-import slideDetect from '../assets/examples/slide-detect.jpg'
+import photoTrackFemale from '../assets/examples/photo-track-female.jpg'
+import photoTrackMale from '../assets/examples/photo-track-male.jpg'
+import photoStreetFemale from '../assets/examples/photo-street-female.jpg'
+import photoStreetMale from '../assets/examples/photo-street-male.jpg'
 
 const SLIDES = [
-  { src: slideGround, alt: '高效着地与跨步过大的角度差异对比' },
-  { src: slideSagittal, alt: '跑步姿势矢状面角度分析' },
-  { src: slideSwing, alt: '摆动阶段角度评估' },
-  { src: slideDetect, alt: '跑步姿态角度检测' },
+  { src: photoTrackFemale, alt: '侧面跑姿示例：田径场女性跑者' },
+  { src: photoTrackMale, alt: '侧面跑姿示例：田径场男性跑者' },
+  { src: photoStreetFemale, alt: '侧面跑姿示例：路跑女性' },
+  { src: photoStreetMale, alt: '侧面跑姿示例：路跑男性' },
 ]
 
 interface Props {
