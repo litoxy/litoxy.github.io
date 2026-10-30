@@ -440,47 +440,48 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
 
       {phase === 'idle' && (
         <div className="capture-guide" aria-label="跑姿示例">
-          <div
-            className="slides"
-            onScroll={(e) => {
-              const el = e.currentTarget
-              const i = Math.round(el.scrollLeft / el.clientWidth)
-              setSlide(Math.max(0, Math.min(SLIDES.length - 1, i)))
-            }}
-          >
-            {SLIDES.map((s, i) => (
-              <figure key={s.src} className="slide">
-                <img
-                  src={s.src}
-                  alt={s.alt}
-                  draggable={false}
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                />
-              </figure>
-            ))}
-          </div>
-          <div className="slide-dots">
-            {SLIDES.map((s, i) => (
-              <button
-                key={s.src}
-                type="button"
-                aria-label={`查看示例 ${i + 1}`}
-                className={i === slide ? 'on' : undefined}
-                onClick={(e) => {
-                  const el = (e.currentTarget.parentElement as HTMLElement)
-                    .previousElementSibling as HTMLElement
-                  el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' })
-                }}
-              />
-            ))}
-          </div>
-          <p className="slide-hint">
-            <span className="slide-count">
+          <div className="slide-frame">
+            <div
+              className="slides"
+              onScroll={(e) => {
+                const el = e.currentTarget
+                const i = Math.round(el.scrollLeft / el.clientWidth)
+                setSlide(Math.max(0, Math.min(SLIDES.length - 1, i)))
+              }}
+            >
+              {SLIDES.map((s, i) => (
+                <figure key={s.src} className="slide">
+                  <img
+                    src={s.src}
+                    alt={s.alt}
+                    draggable={false}
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                  />
+                </figure>
+              ))}
+            </div>
+            <span className="slide-count" aria-live="polite">
               {slide + 1}/{SLIDES.length}
             </span>
-            左右滑动看示例 · 优秀跑姿由这些角度支撑，你的视频会被逐帧测量同样指标
-          </p>
+            <div className="slide-dots">
+              {SLIDES.map((s, i) => (
+                <button
+                  key={s.src}
+                  type="button"
+                  aria-label={`查看示例 ${i + 1}`}
+                  className={i === slide ? 'on' : undefined}
+                  onClick={() => {
+                    const el = document.querySelector('.slides') as HTMLElement
+                    el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' })
+                  }}
+                />
+              ))}
+            </div>
+          </div>
           <div className="guide-card">
+            <p className="guide-intro">
+              优秀跑姿由这些角度支撑 —— 你的视频会被逐帧测量同样指标
+            </p>
             <p className="guide-title">拍摄要点</p>
             <ul className="guide-do">
               <li>
