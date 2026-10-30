@@ -748,3 +748,107 @@ button:focus-visible {
   .guide-card { animation: riseIn 0.5s var(--ease-out) 0.24s both; }
   .actions { animation: riseIn 0.5s var(--ease-out) 0.32s both; }
 }
+
+/* ---------- 结果页：全量参考跑者对比 + 七维雷达图 ---------- */
+
+.runner-tabs {
+  display: flex;
+  gap: 0.45rem;
+  margin-bottom: 0.9rem;
+}
+
+.runner-tab {
+  flex: 1;
+  border: none;
+  border-radius: 14px;
+  padding: 0.55rem 0.3rem;
+  display: grid;
+  gap: 0.1rem;
+  background: rgba(20, 32, 24, 0.06);
+  color: var(--ink-soft);
+  transition: background 0.15s ease;
+}
+
+.runner-tab .rt-name {
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.runner-tab .rt-sim {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.08rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.runner-tab.active {
+  background: var(--ink);
+}
+
+.runner-tab.active .rt-name {
+  color: rgba(231, 236, 230, 0.72);
+}
+
+.runner-tab.active .rt-sim {
+  color: var(--brass-bright);
+}
+
+.radar-wrap {
+  margin-bottom: 0.9rem;
+  border-radius: var(--radius);
+  background: linear-gradient(158deg, rgba(28, 42, 34, 0.94), rgba(15, 23, 18, 0.94));
+  padding: 0.8rem 0.6rem 0.75rem;
+  box-shadow:
+    inset 0 0 0 1px rgba(228, 197, 106, 0.16),
+    0 16px 36px rgba(20, 32, 24, 0.16);
+}
+
+.radar {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.radar-grid {
+  fill: none;
+  stroke: rgba(231, 236, 230, 0.14);
+  stroke-width: 1;
+}
+
+.radar-spoke {
+  stroke: rgba(231, 236, 230, 0.1);
+  stroke-width: 1;
+}
+
+.radar-ref {
+  fill: rgba(228, 197, 106, 0.06);
+  stroke: rgba(228, 197, 106, 0.55);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+
+.radar-user {
+  fill: rgba(228, 197, 106, 0.3);
+  stroke: #e4c56a;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.radar-label {
+  fill: rgba(231, 236, 230, 0.78);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.radar-caption {
+  margin: 0.55rem 0.55rem 0;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: rgba(231, 236, 230, 0.66);
+}
+
+.radar-caption strong {
+  color: var(--brass-bright);
+}
