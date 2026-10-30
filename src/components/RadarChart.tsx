@@ -10,35 +10,54 @@ interface Props {
 }
 
 /**
+ * 各维度的雷达显示域（绝对值域）。
+ * 两名跑者都按同一值域映射，轮廓反映真实数值大小：
+ * 运动员的雷达不是拉满的六边形，而是在各维落到其实际水平的位置。
+ */
+const DOMAIN: Record<keyof PostureFeatures, [number, number]> = {
+  cadence: [150, 200],
+  bodyLean: [2, 14],
+  hipExtension: [0.5, 1.0],
+  armSwing: [0.3, 0.8],
+  kneeFlexion: [0.4, 0.9],
+  verticalOscillation: [4, 12],
+  symmetry: [0.7, 1.0],
+}
+
+const R_MIN = 0.14 // 值域下限处的半径比例，避免贴圆心
+
+function norm(v: number, [lo, hi]: [number, number]): number {
+  return Math.max(R_MIN, Math.min(1, (v - lo) / (hi - lo)))
+}
+
+/**
  * 七维跑姿对照图。
- * 虚线外圈 = 参照运动员的轮廓（各自缩放到自身半径，作为该维度基准）；
- * 实心区域 = 你的实际轮廓，相对基准按比例缩放：内凹 = 落后，外凸 = 超出。
+ * 虚线轮廓 = 参照运动员（按同一绝对值域映射）；
+ * 实心区域 = 你的实际轮廓。两形重叠处即为持平，凹凸即差距。
  */
 export function RadarChart({ features, reference, referenceName }: Props) {
   const cx = 130
   const cy = 124
   const n = METRIC_META.length
-  const R = 82 // 基准半径
+  const R = 86 // 值域上限半径
   const angle = (i: number) => (Math.PI * 2 * i) / n - Math.PI / 2
   const pt = (i: number, r: number) =>
     `${(cx + Math.cos(angle(i)) * r).toFixed(1)},${(cy + Math.sin(angle(i)) * r).toFixed(1)}`
 
-  const refPoly = METRIC_META.map((_, i) => pt(i, R)).join(' ')
+  const refPoly = METRIC_META.map((m, i) =>
+    pt(i, R * norm(reference[m.key], DOMAIN[m.key])),
+  ).join(' ')
 
-  // 你的轮廓：以参照为基准，按比例映射到 0.18R–1.35R 区间
-  const userPoly = METRIC_META.map((m, i) => {
-    const refVal = Math.abs(reference[m.key]) || 1
-    const ratio = features[m.key] / refVal
-    const mapped = Math.max(0.18, Math.min(1.35, ratio))
-    return pt(i, R * mapped)
-  }).join(' ')
+  const userPoly = METRIC_META.map((m, i) =>
+    pt(i, R * norm(features[m.key], DOMAIN[m.key])),
+  ).join(' ')
 
   return (
     <svg
       className="radar"
       viewBox="0 0 260 250"
       role="img"
-      aria-label={`七维跑姿对照图，基准为${referenceName}`}
+      aria-label={`七维跑姿对照图，参照为${referenceName}`}
     >
       {[0.25, 0.5, 0.75, 1].map((r) => (
         <polygon

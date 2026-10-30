@@ -78,7 +78,6 @@ export default function App() {
           <ResultPage
             session={session}
             onBack={toCapture}
-            onReplay={() => go(ROUTES.replay(session.sessionId))}
           />
         )}
 

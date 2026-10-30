@@ -184,6 +184,11 @@ button:focus-visible {
   z-index: 6;
 }
 
+.page.capture .actions {
+  background: transparent;
+  padding-top: 0.55rem;
+}
+
 .btn {
   flex: 1;
   border: none;
@@ -296,6 +301,12 @@ button:focus-visible {
   display: block;
   background: var(--stage);
   box-shadow: 0 18px 36px rgba(20, 32, 24, 0.16);
+}
+
+.result .replay-canvas {
+  width: min(56%, 230px);
+  margin: 0.4rem auto 0.9rem;
+  box-shadow: 0 10px 22px rgba(20, 32, 24, 0.14);
 }
 
 .replay-canvas.tall {
@@ -560,6 +571,7 @@ button:focus-visible {
   display: flex;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
   scrollbar-width: none;
   border-radius: var(--radius);
   height: 30dvh;
@@ -593,16 +605,22 @@ button:focus-visible {
   margin-top: 0.5rem;
 }
 
-.slide-dots span {
-  width: 6px;
-  height: 6px;
+.slide-dots span,
+.slide-dots button {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: none;
   border-radius: 50%;
   background: rgba(228, 197, 106, 0.3);
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.2s;
+  cursor: pointer;
 }
 
-.slide-dots span.on {
+.slide-dots span.on,
+.slide-dots button.on {
   background: #e4c56a;
+  transform: scale(1.25);
 }
 
 .slide-hint {
@@ -778,6 +796,20 @@ button:focus-visible {
   transition: background 0.15s ease;
 }
 
+.runner-tab .rt-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.25rem;
+  background: rgba(20, 32, 24, 0.08);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.55);
+}
+
+.runner-tab.active .rt-avatar {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85);
+}
+
 .runner-tab .rt-name {
   font-size: 0.84rem;
   font-weight: 600;
@@ -856,6 +888,13 @@ button:focus-visible {
   font-size: 0.78rem;
   line-height: 1.55;
   color: rgba(231, 236, 230, 0.66);
+}
+
+.radar-source {
+  margin: 0.45rem 0.55rem 0;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: rgba(231, 236, 230, 0.42);
 }
 
 .radar-caption strong {
@@ -1031,4 +1070,83 @@ button:focus-visible {
   height: 84px;
   color: var(--ink-soft);
   opacity: 0.45;
+}
+
+
+/* ---------- 结果页动画编排 ---------- */
+@keyframes radarIn {
+  from { opacity: 0; transform: scale(0.55); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes barGrow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes barGrowLow {
+  from { transform: translateX(-100%) scaleX(0); }
+  to { transform: translateX(-100%) scaleX(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .page.result > .page-head { animation: riseIn 0.45s var(--ease-out) both; }
+  .page.result > .result-lede { animation: riseIn 0.5s var(--ease-out) 0.06s both; }
+  .page.result > .runner-tabs { animation: riseIn 0.5s var(--ease-out) 0.12s both; }
+  .page.result > .radar-wrap { animation: riseIn 0.55s var(--ease-out) 0.18s both; }
+  .radar-user,
+  .radar-ref {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: radarIn 0.65s var(--ease-out) 0.4s both;
+  }
+  .page.result > .delta-list { animation: riseIn 0.55s var(--ease-out) 0.26s both; }
+  .delta-fill.pos {
+    transform-origin: left center;
+    animation: barGrow 0.6s var(--ease-out) 0.45s both;
+  }
+  .delta-fill.neg {
+    transform-origin: right center;
+    animation: barGrowLow 0.6s var(--ease-out) 0.45s both;
+  }
+  .delta-list .delta-row:nth-child(1) { animation: riseIn 0.5s var(--ease-out) 0.42s both; }
+  .delta-list .delta-row:nth-child(2) { animation: riseIn 0.5s var(--ease-out) 0.47s both; }
+  .delta-list .delta-row:nth-child(3) { animation: riseIn 0.5s var(--ease-out) 0.52s both; }
+  .delta-list .delta-row:nth-child(4) { animation: riseIn 0.5s var(--ease-out) 0.57s both; }
+  .delta-list .delta-row:nth-child(5) { animation: riseIn 0.5s var(--ease-out) 0.62s both; }
+  .delta-list .delta-row:nth-child(6) { animation: riseIn 0.5s var(--ease-out) 0.67s both; }
+  .delta-list .delta-row:nth-child(7) { animation: riseIn 0.5s var(--ease-out) 0.72s both; }
+  .page.result > .advice-block { animation: riseIn 0.55s var(--ease-out) 0.34s both; }
+  .page.result > .replay-canvas { animation: riseIn 0.55s var(--ease-out) 0.42s both; }
+}
+
+/* ---------- 首页拍摄要点：淡化 + 避让底部按钮 ---------- */
+.page.capture .guide-card {
+  justify-content: flex-start;
+  padding: 0.9rem 1.1rem 2rem;
+  background: linear-gradient(158deg, rgba(28, 42, 34, 0.55), rgba(15, 23, 18, 0.5));
+  box-shadow: inset 0 0 0 1px rgba(228, 197, 106, 0.1);
+}
+
+.page.capture .guide-title {
+  font-size: 0.86rem;
+  margin-bottom: 0.5rem;
+  color: rgba(228, 197, 106, 0.72);
+}
+
+.page.capture .guide-do {
+  gap: 0.5rem;
+}
+
+.page.capture .guide-do li {
+  font-size: 0.84rem;
+  opacity: 0.82;
+}
+
+
+/* ---------- 首页底部双入口按钮 ---------- */
+.btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px rgba(20, 32, 24, 0.35);
 }

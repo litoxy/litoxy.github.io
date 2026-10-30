@@ -6,16 +6,12 @@ import { estimateFrame, getDetector } from '../lib/pose'
 import { drawSkeleton, skeletonThumbnail } from '../lib/skeletonDraw'
 import { looksLikeVideoFile, seekVideo, waitVideoEvent } from '../lib/media'
 import type { SessionRecord, SkeletonFrame } from '../lib/types'
-import photoTrackFemale from '../assets/examples/photo-track-female.jpg'
-import photoTrackMale from '../assets/examples/photo-track-male.jpg'
-import photoStreetFemale from '../assets/examples/photo-street-female.jpg'
-import photoStreetMale from '../assets/examples/photo-street-male.jpg'
 
 const SLIDES = [
-  { src: photoTrackFemale, alt: '侧面跑姿示例：田径场女性跑者' },
-  { src: photoTrackMale, alt: '侧面跑姿示例：田径场男性跑者' },
-  { src: photoStreetFemale, alt: '侧面跑姿示例：路跑女性' },
-  { src: photoStreetMale, alt: '侧面跑姿示例：路跑男性' },
+  { src: '/examples/photo-track-female.jpg', alt: '侧面跑姿示例：田径场女性跑者' },
+  { src: '/examples/photo-track-male.jpg', alt: '侧面跑姿示例：田径场男性跑者' },
+  { src: '/examples/photo-street-female.jpg', alt: '侧面跑姿示例：路跑女性' },
+  { src: '/examples/photo-street-male.jpg', alt: '侧面跑姿示例：路跑男性' },
 ]
 
 interface Props {
@@ -410,28 +406,6 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
         <button type="button" className="text-btn history-entry" onClick={onOpenHistory}>
           历史记录
         </button>
-        <div className="mode-switch" role="tablist" aria-label="输入方式">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={mode === 'file'}
-            className={mode === 'file' ? 'active' : undefined}
-            disabled={busy}
-            onClick={() => switchMode('file')}
-          >
-            选视频
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={mode === 'live'}
-            className={mode === 'live' ? 'active' : undefined}
-            disabled={busy}
-            onClick={() => switchMode('live')}
-          >
-            直接录制
-          </button>
-        </div>
       </header>
 
       <div className={`stage ${phase !== 'idle' ? 'live' : 'idle'}`}>
@@ -480,9 +454,19 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
               </figure>
             ))}
           </div>
-          <div className="slide-dots" aria-hidden>
+          <div className="slide-dots">
             {SLIDES.map((s, i) => (
-              <span key={s.src} className={i === slide ? 'on' : undefined} />
+              <button
+                key={s.src}
+                type="button"
+                aria-label={`查看示例 ${i + 1}`}
+                className={i === slide ? 'on' : undefined}
+                onClick={(e) => {
+                  const el = (e.currentTarget.parentElement as HTMLElement)
+                    .previousElementSibling as HTMLElement
+                  el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' })
+                }}
+              />
             ))}
           </div>
           <p className="slide-hint">
@@ -518,23 +502,29 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
       )}
 
       <div className="actions">
-        {mode === 'file' && (phase === 'idle' || phase === 'error') && (
-          <button
-            type="button"
-            className="btn primary"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            选择视频
-          </button>
-        )}
-        {mode === 'live' && (phase === 'idle' || phase === 'error') && (
-          <button
-            type="button"
-            className="btn primary"
-            onClick={() => void startCamera()}
-          >
-            打开相机
-          </button>
+        {(phase === 'idle' || phase === 'error') && (
+          <>
+            <button
+              type="button"
+              className="btn ghost"
+              onClick={() => {
+                switchMode('file')
+                fileInputRef.current?.click()
+              }}
+            >
+              选择视频
+            </button>
+            <button
+              type="button"
+              className="btn primary"
+              onClick={() => {
+                switchMode('live')
+                void startCamera()
+              }}
+            >
+              直接录制
+            </button>
+          </>
         )}
         {phase === 'loading' && (
           <button type="button" className="btn primary" disabled>

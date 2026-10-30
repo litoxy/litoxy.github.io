@@ -102,5 +102,8 @@ export interface GoldenRunner {
   id: string
   name: string
   tagline: string
+  avatar?: string
+  /** 该跑姿特征档案的依据/来源说明（展示给用户） */
+  source?: string
   featureVector: PostureFeatures
 }

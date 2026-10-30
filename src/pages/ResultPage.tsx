@@ -8,7 +8,6 @@ import type { DeltaRow, SessionRecord } from '../lib/types'
 interface Props {
   session: SessionRecord
   onBack: () => void
-  onReplay: () => void
 }
 
 function deltaText(row: DeltaRow): string {
@@ -17,7 +16,7 @@ function deltaText(row: DeltaRow): string {
   return `${sign}${row.deltaPct}%`
 }
 
-export function ResultPage({ session, onBack, onReplay }: Props) {
+export function ResultPage({ session, onBack }: Props) {
   const diffs = diffAgainstAll(session.features)
   const [activeIdx, setActiveIdx] = useState(0)
   const active = diffs[activeIdx]
@@ -31,9 +30,6 @@ export function ResultPage({ session, onBack, onReplay }: Props) {
       <header className="page-head compact">
         <button type="button" className="text-btn" onClick={onBack}>
           返回
-        </button>
-        <button type="button" className="text-btn" onClick={onReplay}>
-          回放
         </button>
       </header>
 
@@ -53,6 +49,7 @@ export function ResultPage({ session, onBack, onReplay }: Props) {
               className={`runner-tab ${i === activeIdx ? 'active' : ''}`}
               onClick={() => setActiveIdx(i)}
             >
+              {r.avatar && <img className="rt-avatar" src={r.avatar} alt={r.name} loading="lazy" />}
               <span className="rt-name">{r.name}</span>
               <span className="rt-tag">{r.tagline}</span>
             </button>
@@ -66,13 +63,15 @@ export function ResultPage({ session, onBack, onReplay }: Props) {
           <span className="radar-div">差异 {active.divergence}</span>
         </div>
         <RadarChart
+          key={runner.id}
           features={session.features}
           reference={runner.featureVector}
           referenceName={runner.name}
         />
         <p className="radar-caption">
-          虚线 = {runner.name} 的跑姿基准 · 实心 = 你的轮廓。<strong>内凹处落后，外凸处超出</strong>
+          虚线 = {runner.name} 的轮廓 · 实心 = 你的轮廓。两形重叠即持平，<strong>凹处落后，凸处超出</strong>
         </p>
+        {runner.source && <p className="radar-source">数据来源：{runner.source}</p>}
       </div>
 
       <ul className="delta-list">
@@ -127,12 +126,6 @@ export function ResultPage({ session, onBack, onReplay }: Props) {
         className="replay-canvas"
         playing
       />
-
-      <div className="actions bottom-plain">
-        <button type="button" className="btn primary" onClick={onReplay}>
-          回放
-        </button>
-      </div>
     </section>
   )
 }

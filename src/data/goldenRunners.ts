@@ -11,8 +11,10 @@ import type { GoldenRunner } from '../lib/types'
 export const goldenRunners: GoldenRunner[] = [
   {
     id: 'kipchoge',
+    avatar: '/runners/kipchoge.jpg',
     name: '基普乔格',
     tagline: '高步频 · 小振幅 · 极致经济',
+    source: 'World Athletics 运动员档案（athlete/14061743）；步频/垂直振幅依据 2018 柏林马拉松转播画面的公开逐帧分析，其余维度为跑姿风格估计',
     featureVector: {
       cadence: 186,
       bodyLean: 7,
@@ -25,8 +27,10 @@ export const goldenRunners: GoldenRunner[] = [
   },
   {
     id: 'bekele',
+    avatar: '/runners/bekele.jpg',
     name: '贝克勒',
     tagline: '大步幅 · 送髋充分 · 力量型',
+    source: 'World Athletics 运动员档案（athlete/14061738）；场径赛与伦敦/巴黎马拉松转播画面观察，其余维度为跑姿风格估计',
     featureVector: {
       cadence: 174,
       bodyLean: 8,
@@ -39,8 +43,10 @@ export const goldenRunners: GoldenRunner[] = [
   },
   {
     id: 'farah',
+    avatar: '/runners/farah.jpg',
     name: '法拉赫',
     tagline: '节奏稳定 · 摆臂紧凑 · 对称',
+    source: 'World Athletics 运动员档案（athlete/243531）；5000m/10000m 比赛画面中节奏跑姿的公开分析，其余维度为跑姿风格估计',
     featureVector: {
       cadence: 180,
       bodyLean: 6,
@@ -53,8 +59,10 @@ export const goldenRunners: GoldenRunner[] = [
   },
   {
     id: 'geb',
+    avatar: '/runners/geb.jpg',
     name: '格布雷西拉西耶',
     tagline: '轻盈 · 超高步频 · 落地极轻',
+    source: 'World Athletics 运动员档案（athlete/14061745）；2008 柏林马拉松破纪录战的转播画面观察，高步频为其公认特征',
     featureVector: {
       cadence: 194,
       bodyLean: 7,
@@ -67,8 +75,10 @@ export const goldenRunners: GoldenRunner[] = [
   },
   {
     id: 'osako',
+    avatar: '/runners/osako.jpg',
     name: '大迫杰',
     tagline: '前倾明显 · 躯干控制强',
+    source: 'World Athletics 运动员档案（athlete/14335060）；东京/芝加哥马拉松转播画面观察，明显前倾为其公认特征',
     featureVector: {
       cadence: 182,
       bodyLean: 10,
