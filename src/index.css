@@ -16,6 +16,7 @@
   --font-display: 'Syne', system-ui, sans-serif;
   --font-body: 'Figtree', system-ui, sans-serif;
   color: var(--ink);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   background:
     radial-gradient(90% 70% at 0% 0%, #d8e0d4 0%, transparent 55%),
     radial-gradient(70% 50% at 100% 10%, #e8dfc4 0%, transparent 40%),
@@ -63,7 +64,7 @@ button:focus-visible {
 
 .app-main {
   flex: 1;
-  padding: 1rem 1.1rem calc(var(--nav-h) + 1rem);
+  padding: 1rem 1.1rem 1rem;
 }
 
 .page-head {
@@ -156,43 +157,6 @@ button:focus-visible {
   z-index: 2;
 }
 
-.stage-empty {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-content: center;
-  color: rgba(228, 197, 106, 0.88);
-  z-index: 2;
-}
-
-.glyph {
-  width: 72px;
-  height: 108px;
-  margin: 0 auto;
-}
-
-.glyph.soft {
-  color: var(--ink-soft);
-  opacity: 0.45;
-  width: 56px;
-  height: 84px;
-}
-
-.glyph.pulse {
-  animation: breath 2.8s ease-in-out infinite;
-}
-
-@keyframes breath {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: translateY(0);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(-4px);
-  }
-}
 
 .rec-badge {
   position: absolute;
@@ -210,9 +174,14 @@ button:focus-visible {
 }
 
 .actions {
-  margin-top: 1rem;
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding-top: 0.85rem;
   display: flex;
   gap: 0.75rem;
+  background: linear-gradient(to top, var(--fog) 62%, rgba(242, 244, 240, 0));
+  z-index: 6;
 }
 
 .btn {
@@ -435,9 +404,6 @@ button:focus-visible {
   .btn {
     transition: none;
   }
-  .glyph.pulse {
-    animation: none;
-  }
 }
 
 /* WeChat in-app browser gate */
@@ -573,10 +539,21 @@ button:focus-visible {
 .page-head.compact {
   flex-wrap: wrap;
 }
+
+/* 首屏：纵向 flex 撑满一屏，要点区与底部 CTA 各居其位 */
+.page.capture {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 2rem);
+}
 /* ---------- 跑姿示例 slides + 拍摄要点（单页版） ---------- */
 
 .capture-guide {
   margin-top: 0.9rem;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .slides {
@@ -585,7 +562,9 @@ button:focus-visible {
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   border-radius: var(--radius);
-  background: #f2f4f6;
+  height: 30dvh;
+  background: #e9ede9;
+  box-shadow: 0 10px 26px rgba(20, 32, 24, 0.1);
 }
 
 .slides::-webkit-scrollbar {
@@ -596,12 +575,15 @@ button:focus-visible {
   flex: 0 0 100%;
   margin: 0;
   scroll-snap-align: center;
+  display: grid;
+  place-items: center;
 }
 
 .slide img {
   display: block;
   width: 100%;
-  height: auto; /* 完整显示，不裁剪 */
+  height: 100%;
+  object-fit: contain; /* 完整显示，绝不裁剪 */
 }
 
 .slide-dots {
@@ -630,49 +612,70 @@ button:focus-visible {
   color: var(--ink-soft);
 }
 
-.guide-details {
-  margin-top: 0.6rem;
+/* 拍摄要点：常显卡片，占满首屏剩余空间，不折叠 */
+.guide-card {
+  margin-top: 0.85rem;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.15rem;
   border-radius: var(--radius);
-  background: rgba(36, 53, 44, 0.5);
-  padding: 0.65rem 0.85rem;
+  background: linear-gradient(158deg, rgba(28, 42, 34, 0.94), rgba(15, 23, 18, 0.94));
+  padding: 1.1rem 1.15rem;
+  box-shadow:
+    inset 0 0 0 1px rgba(228, 197, 106, 0.16),
+    0 16px 36px rgba(20, 32, 24, 0.18);
 }
 
-.guide-details summary {
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--ink-soft);
-  list-style: none;
-}
-
-.guide-details summary::-webkit-details-marker {
-  display: none;
-}
-
-.guide-details summary::before {
-  content: '▸ ';
-}
-
-.guide-details[open] summary::before {
-  content: '▾ ';
-}
-
-.guide-details[open] summary {
-  margin-bottom: 0.5rem;
+.guide-title {
+  margin: 0 0 0.7rem;
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--brass-bright);
 }
 
 .guide-do {
   list-style: none;
-  margin: 0.4rem 0 0;
+  margin: 0;
   padding: 0;
-  font-size: 0.86rem;
-  line-height: 1.75;
+  display: grid;
+  gap: 0.85rem;
 }
 
-.do-mark {
-  color: #7fc99b;
-  margin-right: 0.35rem;
-  font-weight: 700;
+.guide-do li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.7rem;
+  align-items: start;
+}
+
+.guide-do .do-mark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: var(--brass-bright);
+  background: rgba(228, 197, 106, 0.14);
+  border-radius: 9px;
+  min-width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+}
+
+.guide-do li strong {
+  display: block;
+  color: var(--chalk);
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+
+.guide-do li span {
+  color: rgba(231, 236, 230, 0.7);
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
 /* ---------- 结果页：参考跑者建议 ---------- */
@@ -730,4 +733,18 @@ button:focus-visible {
   margin: 0.75rem 0 0;
   font-size: 0.84rem;
   color: #7fc99b;
+}
+
+/* ---------- 首屏错峰入场（一次编排，尊重降级） ---------- */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .page.capture > .page-head { animation: riseIn 0.5s var(--ease-out) both; }
+  .capture-guide .slides { animation: riseIn 0.5s var(--ease-out) 0.08s both; }
+  .slide-hint { animation: riseIn 0.5s var(--ease-out) 0.16s both; }
+  .guide-card { animation: riseIn 0.5s var(--ease-out) 0.24s both; }
+  .actions { animation: riseIn 0.5s var(--ease-out) 0.32s both; }
 }

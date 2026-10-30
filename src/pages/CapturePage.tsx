@@ -484,21 +484,32 @@ export function CapturePage({ onSaved }: Props) {
           <p className="slide-hint">
             优秀运动员的跑姿由这些角度支撑 —— 你的视频将被逐帧测量同样的指标
           </p>
-          <details className="guide-details">
-            <summary>拍摄要点</summary>
+          <div className="guide-card">
+            <p className="guide-title">拍摄要点</p>
             <ul className="guide-do">
               <li>
-                <span className="do-mark">✓</span>从<strong>侧面</strong>拍，能看清前后摆腿
+                <span className="do-mark">01</span>
+                <div>
+                  <strong>侧面机位</strong>
+                  <span>从侧面拍，能看清前后摆腿与躯干角度</span>
+                </div>
               </li>
               <li>
-                <span className="do-mark">✓</span>
-                <strong>全身</strong>入镜，脚和头都不被裁掉
+                <span className="do-mark">02</span>
+                <div>
+                  <strong>全身入镜</strong>
+                  <span>脚和头都不裁掉，给髋、膝、踝留出动作空间</span>
+                </div>
               </li>
               <li>
-                <span className="do-mark">✓</span>匀速跑 <strong>3–8 秒</strong>，别加速也别暂停
+                <span className="do-mark">03</span>
+                <div>
+                  <strong>匀速 3–8 秒</strong>
+                  <span>保持节奏，别加速也别中途停顿</span>
+                </div>
               </li>
             </ul>
-          </details>
+          </div>
         </div>
       )}
 
