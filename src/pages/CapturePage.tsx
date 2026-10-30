@@ -20,6 +20,7 @@ const SLIDES = [
 
 interface Props {
   onSaved: (session: SessionRecord) => void
+  onOpenHistory: () => void
 }
 
 type Mode = 'file' | 'live'
@@ -36,7 +37,7 @@ const MAX_SECONDS = 8
 const FILE_MAX_SECONDS = 12
 const FILE_SAMPLE_FPS = 10
 
-export function CapturePage({ onSaved }: Props) {
+export function CapturePage({ onSaved, onOpenHistory }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const overlayRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -406,6 +407,9 @@ export function CapturePage({ onSaved }: Props) {
     <section className="page capture">
       <header className="page-head compact">
         <p className="brand">Form Lab</p>
+        <button type="button" className="text-btn history-entry" onClick={onOpenHistory}>
+          历史记录
+        </button>
         <div className="mode-switch" role="tablist" aria-label="输入方式">
           <button
             type="button"

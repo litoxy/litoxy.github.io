@@ -56,6 +56,36 @@ export interface ComparisonResult {
   allMatches: RunnerMatch[]
 }
 
+/** 单个维度的差异行（差异语义，而非相似度） */
+export interface DeltaRow {
+  key: keyof PostureFeatures
+  label: string
+  short: string
+  user: number
+  reference: number
+  /** 有符号差值：正 = 你高于参照，负 = 你低于参照 */
+  delta: number
+  /** 相对参照值的百分比偏差（绝对值） */
+  deltaPct: number
+  /** 归一化差异强度 0–1 */
+  magnitude: number
+  direction: 'higher' | 'lower' | 'equal'
+  /** 该差异方向是否对跑姿有利 */
+  better: boolean
+  level: 'close' | 'fair' | 'far'
+  userFormatted: string
+  refFormatted: string
+}
+
+/** 与某位参考跑者的完整差异 */
+export interface RunnerDiff {
+  runnerId: string
+  runnerName: string
+  /** 整体差异分 0–100，越大差距越明显 */
+  divergence: number
+  rows: DeltaRow[]
+}
+
 export interface SessionRecord {
   sessionId: string
   timestamp: string

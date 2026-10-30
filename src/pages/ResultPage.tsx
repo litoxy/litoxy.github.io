@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { RadarChart } from '../components/RadarChart'
 import { StickFigureCanvas } from '../components/StickFigureCanvas'
-import { buildAdvice } from '../lib/advice'
-import type { ComparisonResult, SessionRecord } from '../lib/types'
+import { goldenRunners } from '../data/goldenRunners'
+import { diffAgainstAll, METRIC_META } from '../lib/comparison'
+import type { DeltaRow, SessionRecord } from '../lib/types'
 
 interface Props {
   session: SessionRecord
@@ -10,23 +11,20 @@ interface Props {
   onReplay: () => void
 }
 
-export function ResultPage({ session, onBack, onReplay }: Props) {
-  const { comparisonResult: c } = session
-  const [selectedId, setSelectedId] = useState(c.bestMatchId)
-  const selected =
-    c.allMatches.find((m) => m.id === selectedId) ?? c.allMatches[0]
+function deltaText(row: DeltaRow): string {
+  if (row.direction === 'equal') return '持平'
+  const sign = row.direction === 'higher' ? '+' : '−'
+  return `${sign}${row.deltaPct}%`
+}
 
-  // 维度列表与改进建议随所选参考跑者联动
-  const scoped: ComparisonResult = {
-    bestMatchId: selected.id,
-    bestMatchName: selected.name,
-    similarity: selected.similarity,
-    perMetric: selected.perMetric,
-    allMatches: c.allMatches,
-  }
-  const advice = buildAdvice(session.features, scoped)
-  const weakest = advice.filter((a) => a.level !== 'good').slice(0, 3)
-  const good = advice.filter((a) => a.level === 'good')
+export function ResultPage({ session, onBack, onReplay }: Props) {
+  const diffs = diffAgainstAll(session.features)
+  const [activeIdx, setActiveIdx] = useState(0)
+  const active = diffs[activeIdx]
+  const runner = goldenRunners.find((r) => r.id === active.runnerId)!
+
+  // 差距最大的三个维度
+  const worst = [...active.rows].sort((a, b) => b.magnitude - a.magnitude).slice(0, 3)
 
   return (
     <section className="page result">
@@ -34,36 +32,92 @@ export function ResultPage({ session, onBack, onReplay }: Props) {
         <button type="button" className="text-btn" onClick={onBack}>
           返回
         </button>
+        <button type="button" className="text-btn" onClick={onReplay}>
+          回放
+        </button>
       </header>
 
-      <div className="match-block">
-        <p className="match-score">{selected.similarity}</p>
-        <p className="match-copy">
-          与 {selected.name} 的跑姿相似度
-        </p>
-      </div>
+      <p className="result-lede">
+        你的跑姿与 <strong>{diffs.length}</strong> 种优秀跑姿的逐维差距
+      </p>
 
-      <div className="runner-tabs" role="tablist" aria-label="参考跑者对比">
-        {c.allMatches.map((m) => (
-          <button
-            key={m.id}
-            type="button"
-            role="tab"
-            aria-selected={m.id === selectedId}
-            className={`runner-tab ${m.id === selectedId ? 'active' : ''}`}
-            onClick={() => setSelectedId(m.id)}
-          >
-            <span className="rt-name">{m.name}</span>
-            <span className="rt-sim">{m.similarity}%</span>
-          </button>
-        ))}
+      <div className="runner-tabs" role="tablist" aria-label="切换参照跑姿">
+        {diffs.map((d, i) => {
+          const r = goldenRunners.find((x) => x.id === d.runnerId)!
+          return (
+            <button
+              key={d.runnerId}
+              type="button"
+              role="tab"
+              aria-selected={i === activeIdx}
+              className={`runner-tab ${i === activeIdx ? 'active' : ''}`}
+              onClick={() => setActiveIdx(i)}
+            >
+              <span className="rt-name">{r.name}</span>
+              <span className="rt-tag">{r.tagline}</span>
+            </button>
+          )
+        })}
       </div>
 
       <div className="radar-wrap">
-        <RadarChart perMetric={selected.perMetric} referenceName={selected.name} />
+        <div className="radar-head">
+          <span className="radar-title">相对 {runner.name} 的轮廓</span>
+          <span className="radar-div">差异 {active.divergence}</span>
+        </div>
+        <RadarChart
+          features={session.features}
+          reference={runner.featureVector}
+          referenceName={runner.name}
+        />
         <p className="radar-caption">
-          虚线为 {selected.name} 基准轮廓，黄铜区域是你的得分——<strong>凹陷处就是差距所在</strong>
+          虚线 = {runner.name} 的跑姿基准 · 实心 = 你的轮廓。<strong>内凹处落后，外凸处超出</strong>
         </p>
+      </div>
+
+      <ul className="delta-list">
+        {active.rows.map((row) => (
+          <li key={row.key} className={`delta-row ${row.level}`}>
+            <div className="delta-top">
+              <span className="delta-label">{row.label}</span>
+              <span className={`delta-val ${row.direction}`}>{deltaText(row)}</span>
+            </div>
+            <div className="delta-bar">
+              <span className="delta-mid" />
+              <span
+                className={`delta-fill ${row.direction} ${row.better ? 'pos' : 'neg'}`}
+                style={{ width: `${Math.round(row.magnitude * 48)}%` }}
+              />
+            </div>
+            <div className="delta-nums">
+              <span>你 {row.userFormatted}</span>
+              <span>{runner.name} {row.refFormatted}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="advice-block">
+        <p className="advice-title">与 {runner.name} 差距最大的三维</p>
+        <ul className="advice-list">
+          {worst.map((row) => {
+            const meta = METRIC_META.find((m) => m.key === row.key)!
+            return (
+              <li key={row.key}>
+                <strong>{row.label}</strong>
+                <p>
+                  你是 {row.userFormatted}，{runner.name} 是 {row.refFormatted}，
+                  {row.direction === 'lower' ? '低' : '高'}了 {deltaText(row)}。
+                  {row.better
+                    ? '这一维度你就在标杆之上，保持即可。'
+                    : meta.higherBetter
+                      ? '建议朝提高的方向小幅渐进，先把这维拉近一半差距。'
+                      : '建议朝降低的方向调整，减少不必要的上下弹跳。'}
+                </p>
+              </li>
+            )
+          })}
+        </ul>
       </div>
 
       <StickFigureCanvas
@@ -74,36 +128,7 @@ export function ResultPage({ session, onBack, onReplay }: Props) {
         playing
       />
 
-      <ul className="metric-list">
-        {advice.map((a) => (
-          <li key={a.key} className={`metric-item ${a.level}`}>
-            <span>{a.label}</span>
-            <span className="metric-val">{a.userFormatted}</span>
-            <span className="metric-sim">{a.similarity}%</span>
-          </li>
-        ))}
-      </ul>
-
-      {weakest.length > 0 && (
-        <div className="advice-block">
-          <p className="advice-title">改进建议 · 对标 {selected.name}</p>
-          <ul className="advice-list">
-            {weakest.map((a) => (
-              <li key={a.key}>
-                <strong>{a.label}</strong>
-                <p>{a.text}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {good.length > 0 && (
-        <p className="advice-good-line">
-          {good.map((a) => a.label).join('、')}已接近 {selected.name} 的水平，继续保持 👍
-        </p>
-      )}
-
-      <div className="actions">
+      <div className="actions bottom-plain">
         <button type="button" className="btn primary" onClick={onReplay}>
           回放
         </button>

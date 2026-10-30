@@ -4,9 +4,10 @@ import type { SessionRecord } from '../lib/types'
 
 interface Props {
   onOpen: (session: SessionRecord) => void
+  onBack: () => void
 }
 
-export function HistoryPage({ onOpen }: Props) {
+export function HistoryPage({ onOpen, onBack }: Props) {
   const [sessions, setSessions] = useState<SessionRecord[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -29,8 +30,10 @@ export function HistoryPage({ onOpen }: Props) {
   return (
     <section className="page history">
       <header className="page-head compact">
-        <p className="brand">Formline</p>
-        <h1>历史</h1>
+        <button type="button" className="text-btn" onClick={onBack}>
+          返回
+        </button>
+        <h1>历史记录</h1>
       </header>
 
       {loading && <p className="muted">读取中…</p>}
@@ -54,19 +57,21 @@ export function HistoryPage({ onOpen }: Props) {
         {sessions.map((s) => (
           <li key={s.sessionId}>
             <button type="button" className="history-row" onClick={() => onOpen(s)}>
-              <img src={s.thumbnail} alt="" width={80} height={60} />
+              {s.thumbnail ? (
+                <img src={s.thumbnail} alt="" width={80} height={60} />
+              ) : (
+                <span className="history-thumb-empty" aria-hidden />
+              )}
               <div className="history-meta">
                 <strong>
-                  {s.comparisonResult.bestMatchName} · {s.comparisonResult.similarity}%
-                </strong>
-                <span>
                   {new Date(s.timestamp).toLocaleString(undefined, {
                     month: 'short',
                     day: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit',
                   })}
-                </span>
+                </strong>
+                <span>{s.comparisonResult.allMatches?.length ?? 0} 种跑姿对照 · 点击查看差距</span>
               </div>
             </button>
             <button
