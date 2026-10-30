@@ -1,0 +1,50 @@
+# GitLab CI — build Formline and publish GitLab Pages
+# Vite/oxlint need Node ^20.19 || >=22.12
+image: node:22.14-bookworm
+
+stages:
+  - build
+  - deploy
+
+variables:
+  NPM_CONFIG_ENGINE_STRICT: "false"
+  npm_config_engine_strict: "false"
+
+default:
+  tags:
+    - shared
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .npm/
+
+build:
+  stage: build
+  script:
+    - node -v && npm -v
+    - npm ci --cache .npm --prefer-offline
+    - npm run build
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "master"
+
+pages:
+  stage: deploy
+  needs: [build]
+  script:
+    - rm -rf public
+    - mv dist public
+    - touch public/.nojekyll
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "master"
