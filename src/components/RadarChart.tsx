@@ -37,9 +37,9 @@ function norm(v: number, [lo, hi]: [number, number]): number {
  */
 export function RadarChart({ features, reference, referenceName }: Props) {
   const cx = 130
-  const cy = 124
+  const cy = 122
   const n = METRIC_META.length
-  const R = 86 // 值域上限半径
+  const R = 94 // 值域上限半径（撑满画布，减少四周留白）
   const angle = (i: number) => (Math.PI * 2 * i) / n - Math.PI / 2
   const pt = (i: number, r: number) =>
     `${(cx + Math.cos(angle(i)) * r).toFixed(1)},${(cy + Math.sin(angle(i)) * r).toFixed(1)}`
@@ -55,7 +55,7 @@ export function RadarChart({ features, reference, referenceName }: Props) {
   return (
     <svg
       className="radar"
-      viewBox="0 0 260 250"
+      viewBox="0 0 260 244"
       role="img"
       aria-label={`七维跑姿对照图，参照为${referenceName}`}
     >
@@ -79,8 +79,8 @@ export function RadarChart({ features, reference, referenceName }: Props) {
       <polygon className="radar-ref" points={refPoly} />
       <polygon className="radar-user" points={userPoly} />
       {METRIC_META.map((m, i) => {
-        const lx = cx + Math.cos(angle(i)) * (R + 19)
-        const ly = cy + Math.sin(angle(i)) * (R + 19)
+        const lx = cx + Math.cos(angle(i)) * (R + 17)
+        const ly = cy + Math.sin(angle(i)) * (R + 17)
         return (
           <text
             key={m.key}
