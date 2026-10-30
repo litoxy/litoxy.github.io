@@ -6,16 +6,16 @@ import { estimateFrame, getDetector } from '../lib/pose'
 import { drawSkeleton, skeletonThumbnail } from '../lib/skeletonDraw'
 import { looksLikeVideoFile, seekVideo, waitVideoEvent } from '../lib/media'
 import type { SessionRecord, SkeletonFrame } from '../lib/types'
-import run1 from '../assets/examples/run-1.jpg'
-import run2 from '../assets/examples/run-2.jpg'
-import run3 from '../assets/examples/run-3.jpg'
-import badBack from '../assets/examples/bad-back.jpg'
-import badCrop from '../assets/examples/bad-crop.jpg'
+import slideGround from '../assets/examples/slide-ground.jpg'
+import slideSagittal from '../assets/examples/slide-sagittal.jpg'
+import slideSwing from '../assets/examples/slide-swing.jpg'
+import slideDetect from '../assets/examples/slide-detect.jpg'
 
-const EXAMPLES = [
-  { src: run1, alt: '侧身跑姿示例一' },
-  { src: run2, alt: '侧身跑姿示例二' },
-  { src: run3, alt: '侧身跑姿示例三' },
+const SLIDES = [
+  { src: slideGround, alt: '高效着地与跨步过大的角度差异对比' },
+  { src: slideSagittal, alt: '跑步姿势矢状面角度分析' },
+  { src: slideSwing, alt: '摆动阶段角度评估' },
+  { src: slideDetect, alt: '跑步姿态角度检测' },
 ]
 
 interface Props {
@@ -57,6 +57,7 @@ export function CapturePage({ onSaved }: Props) {
   const [error, setError] = useState('')
   const [elapsed, setElapsed] = useState(0)
   const [progress, setProgress] = useState(0)
+  const [slide, setSlide] = useState(0)
 
   const setPhaseBoth = (p: Phase) => {
     phaseRef.current = p
@@ -429,47 +430,27 @@ export function CapturePage({ onSaved }: Props) {
         </div>
       </header>
 
-      <div
-        className={`stage ${phase !== 'idle' ? 'live' : ''}`}
-        onClick={() => {
-          if (mode === 'file' && phase === 'idle') fileInputRef.current?.click()
-        }}
-      >
-        <video ref={videoRef} playsInline muted className="stage-video" />
-        <canvas ref={overlayRef} className="stage-overlay" />
-        {phase === 'idle' && (
-          <div className="stage-empty">
-            <svg className="glyph pulse" viewBox="0 0 80 120" aria-hidden>
-              <circle
-                cx="40"
-                cy="14"
-                r="8"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-              />
-              <path
-                d="M40 24 L40 58 M40 34 L22 48 M40 34 L58 48 M40 58 L26 96 M40 58 L54 96"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </svg>
-            {mode === 'file' && <p className="stage-hint">点这里选视频</p>}
-          </div>
-        )}
-        {phase === 'recording' && (
-          <div className="rec-badge" aria-live="polite">
-            {elapsed.toFixed(1)}s
-          </div>
-        )}
-        {phase === 'analyzing' && mode === 'file' && (
-          <div className="rec-badge soft" aria-live="polite">
-            {progress}%
-          </div>
-        )}
-      </div>
+      {phase !== 'idle' && (
+        <div className="stage live">
+          <video ref={videoRef} playsInline muted className="stage-video" />
+          <canvas ref={overlayRef} className="stage-overlay" />
+          {phase === 'recording' && (
+            <div className="rec-badge" aria-live="polite">
+              {elapsed.toFixed(1)}s
+            </div>
+          )}
+          {phase === 'analyzing' && mode === 'file' && (
+            <div className="rec-badge soft" aria-live="polite">
+              {progress}%
+            </div>
+          )}
+          {phase === 'loading' && (
+            <div className="stage-status" role="status" aria-live="polite">
+              正在准备姿态识别…
+            </div>
+          )}
+        </div>
+      )}
 
       <input
         ref={fileInputRef}
@@ -482,16 +463,29 @@ export function CapturePage({ onSaved }: Props) {
       {error && <p className="error-line">{error}</p>}
 
       {phase === 'idle' && (
-        <div className="capture-guide" aria-label="拍摄示例与要点">
-          <div className="example-strip">
-            {EXAMPLES.map((ex) => (
-              <figure key={ex.src} className="example-item">
-                <img src={ex.src} alt={ex.alt} loading="lazy" />
-                <figcaption>侧身 · 全身入镜</figcaption>
+        <div className="capture-guide" aria-label="跑姿示例">
+          <div
+            className="slides"
+            onScroll={(e) => {
+              const el = e.currentTarget
+              const i = Math.round(el.scrollLeft / el.clientWidth)
+              setSlide(Math.max(0, Math.min(SLIDES.length - 1, i)))
+            }}
+          >
+            {SLIDES.map((s) => (
+              <figure key={s.src} className="slide">
+                <img src={s.src} alt={s.alt} loading="lazy" />
               </figure>
             ))}
           </div>
-
+          <div className="slide-dots" aria-hidden>
+            {SLIDES.map((s, i) => (
+              <span key={s.src} className={i === slide ? 'on' : undefined} />
+            ))}
+          </div>
+          <p className="slide-hint">
+            优秀运动员的跑姿由这些角度支撑 —— 你的视频将被逐帧测量同样的指标
+          </p>
           <details className="guide-details">
             <summary>拍摄要点</summary>
             <ul className="guide-do">
@@ -506,18 +500,6 @@ export function CapturePage({ onSaved }: Props) {
                 <span className="do-mark">✓</span>匀速跑 <strong>3–8 秒</strong>，别加速也别暂停
               </li>
             </ul>
-            <p className="guide-title">别这样拍</p>
-            <div className="guide-dont">
-              <figure>
-                <img src={badBack} alt="反面示例：背影拍摄" loading="lazy" />
-                <figcaption>背面拍摄</figcaption>
-              </figure>
-              <figure>
-                <img src={badCrop} alt="反面示例：身体被裁掉" loading="lazy" />
-                <figcaption>身体被裁掉</figcaption>
-              </figure>
-            </div>
-            <p className="guide-credit">示例图片来自 Unsplash（免费授权）</p>
           </details>
         </div>
       )}
