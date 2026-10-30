@@ -106,7 +106,9 @@ button:focus-visible {
 
 .stage {
   position: relative;
-  aspect-ratio: 3 / 4;
+  /* 压缩取景区高度：按钮才是主角，示例与要点区紧凑跟随 */
+  aspect-ratio: auto;
+  height: clamp(200px, 34dvh, 320px);
   border-radius: var(--radius);
   overflow: hidden;
   background:
@@ -565,4 +567,185 @@ button:focus-visible {
 
 .page-head.compact {
   flex-wrap: wrap;
+}
+/* ---------- 紧凑示例区 + 拍摄要点（单页版） ---------- */
+
+.capture-guide {
+  margin-top: 0.85rem;
+  min-height: 0;
+}
+
+.example-strip {
+  display: flex;
+  gap: 0.6rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 0.15rem;
+}
+
+.example-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.example-item {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.example-item img {
+  display: block;
+  height: 92px;
+  width: auto;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: inset 0 0 0 1px rgba(228, 197, 106, 0.12);
+}
+
+.example-item figcaption {
+  margin-top: 0.3rem;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.guide-details {
+  margin-top: 0.6rem;
+  border-radius: var(--radius);
+  background: rgba(36, 53, 44, 0.5);
+  padding: 0.65rem 0.85rem;
+}
+
+.guide-details summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  list-style: none;
+}
+
+.guide-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.guide-details summary::before {
+  content: '▸ ';
+}
+
+.guide-details[open] summary::before {
+  content: '▾ ';
+}
+
+.guide-details[open] summary {
+  margin-bottom: 0.5rem;
+}
+
+.guide-do {
+  list-style: none;
+  margin: 0.4rem 0;
+  padding: 0;
+  font-size: 0.86rem;
+  line-height: 1.75;
+}
+
+.do-mark {
+  color: #7fc99b;
+  margin-right: 0.35rem;
+  font-weight: 700;
+}
+
+.guide-title {
+  margin: 0.5rem 0 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.guide-dont {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.guide-dont figure {
+  margin: 0;
+  flex: 1;
+}
+
+.guide-dont img {
+  display: block;
+  width: 100%;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  filter: grayscale(0.7) brightness(0.8);
+}
+
+.guide-dont figcaption {
+  margin-top: 0.25rem;
+  font-size: 0.72rem;
+  color: #d99a9a;
+  text-align: center;
+}
+
+.guide-credit {
+  margin: 0.55rem 0 0;
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+  opacity: 0.75;
+}
+
+/* ---------- 结果页：参考跑者建议 ---------- */
+
+.metric-item.good .metric-sim {
+  color: #7fc99b;
+}
+
+.metric-item.fair .metric-sim {
+  color: #e8c872;
+}
+
+.metric-item.weak .metric-sim {
+  color: #d98a8a;
+}
+
+.advice-block {
+  margin-top: 1rem;
+  border-radius: var(--radius);
+  background: rgba(36, 53, 44, 0.5);
+  padding: 0.85rem 0.95rem;
+}
+
+.advice-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.advice-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.advice-list li {
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.advice-list strong {
+  color: var(--ink);
+  margin-right: 0.4rem;
+}
+
+.advice-list p {
+  margin: 0.15rem 0 0;
+}
+
+.advice-good-line {
+  margin: 0.75rem 0 0;
+  font-size: 0.84rem;
+  color: #7fc99b;
 }

@@ -1,15 +1,6 @@
 import { StickFigureCanvas } from '../components/StickFigureCanvas'
+import { buildAdvice } from '../lib/advice'
 import type { SessionRecord } from '../lib/types'
-
-const METRIC_LABELS: Record<string, string> = {
-  cadence: '步频',
-  bodyLean: '前倾',
-  hipExtension: '送髋',
-  armSwing: '摆臂',
-  kneeFlexion: '屈膝',
-  verticalOscillation: '振幅',
-  symmetry: '对称',
-}
 
 interface Props {
   session: SessionRecord
@@ -18,7 +9,10 @@ interface Props {
 }
 
 export function ResultPage({ session, onBack, onReplay }: Props) {
-  const { comparisonResult: c, features } = session
+  const { comparisonResult: c } = session
+  const advice = buildAdvice(session.features, c)
+  const weakest = advice.filter((a) => a.level !== 'good').slice(0, 3)
+  const good = advice.filter((a) => a.level === 'good')
 
   return (
     <section className="page result">
@@ -30,7 +24,9 @@ export function ResultPage({ session, onBack, onReplay }: Props) {
 
       <div className="match-block">
         <p className="match-score">{c.similarity}</p>
-        <p className="match-copy">{c.bestMatchName}</p>
+        <p className="match-copy">
+          最接近参考跑者 · {c.bestMatchName}
+        </p>
       </div>
 
       <StickFigureCanvas
@@ -42,18 +38,33 @@ export function ResultPage({ session, onBack, onReplay }: Props) {
       />
 
       <ul className="metric-list">
-        {(Object.keys(METRIC_LABELS) as (keyof typeof features)[]).map((key) => (
-          <li key={key}>
-            <span>{METRIC_LABELS[key]}</span>
-            <span className="metric-val">
-              {typeof features[key] === 'number' && key === 'cadence'
-                ? `${features[key]}`
-                : features[key]}
-            </span>
-            <span className="metric-sim">{c.perMetric[key]}%</span>
+        {advice.map((a) => (
+          <li key={a.key} className={`metric-item ${a.level}`}>
+            <span>{a.label}</span>
+            <span className="metric-val">{a.userFormatted}</span>
+            <span className="metric-sim">{a.similarity}%</span>
           </li>
         ))}
       </ul>
+
+      {weakest.length > 0 && (
+        <div className="advice-block">
+          <p className="advice-title">改进建议</p>
+          <ul className="advice-list">
+            {weakest.map((a) => (
+              <li key={a.key}>
+                <strong>{a.label}</strong>
+                <p>{a.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {good.length > 0 && (
+        <p className="advice-good-line">
+          {good.map((a) => a.label).join('、')}已接近参考水平，继续保持 👍
+        </p>
+      )}
 
       <div className="actions">
         <button type="button" className="btn primary" onClick={onReplay}>

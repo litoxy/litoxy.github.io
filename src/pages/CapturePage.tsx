@@ -6,6 +6,17 @@ import { estimateFrame, getDetector } from '../lib/pose'
 import { drawSkeleton, skeletonThumbnail } from '../lib/skeletonDraw'
 import { looksLikeVideoFile, seekVideo, waitVideoEvent } from '../lib/media'
 import type { SessionRecord, SkeletonFrame } from '../lib/types'
+import run1 from '../assets/examples/run-1.jpg'
+import run2 from '../assets/examples/run-2.jpg'
+import run3 from '../assets/examples/run-3.jpg'
+import badBack from '../assets/examples/bad-back.jpg'
+import badCrop from '../assets/examples/bad-crop.jpg'
+
+const EXAMPLES = [
+  { src: run1, alt: '侧身跑姿示例一' },
+  { src: run2, alt: '侧身跑姿示例二' },
+  { src: run3, alt: '侧身跑姿示例三' },
+]
 
 interface Props {
   onSaved: (session: SessionRecord) => void
@@ -393,7 +404,7 @@ export function CapturePage({ onSaved }: Props) {
   return (
     <section className="page capture">
       <header className="page-head compact">
-        <p className="brand">Formline</p>
+        <p className="brand">Form Lab</p>
         <div className="mode-switch" role="tablist" aria-label="输入方式">
           <button
             type="button"
@@ -469,6 +480,47 @@ export function CapturePage({ onSaved }: Props) {
       />
 
       {error && <p className="error-line">{error}</p>}
+
+      {phase === 'idle' && (
+        <div className="capture-guide" aria-label="拍摄示例与要点">
+          <div className="example-strip">
+            {EXAMPLES.map((ex) => (
+              <figure key={ex.src} className="example-item">
+                <img src={ex.src} alt={ex.alt} loading="lazy" />
+                <figcaption>侧身 · 全身入镜</figcaption>
+              </figure>
+            ))}
+          </div>
+
+          <details className="guide-details">
+            <summary>拍摄要点</summary>
+            <ul className="guide-do">
+              <li>
+                <span className="do-mark">✓</span>从<strong>侧面</strong>拍，能看清前后摆腿
+              </li>
+              <li>
+                <span className="do-mark">✓</span>
+                <strong>全身</strong>入镜，脚和头都不被裁掉
+              </li>
+              <li>
+                <span className="do-mark">✓</span>匀速跑 <strong>3–8 秒</strong>，别加速也别暂停
+              </li>
+            </ul>
+            <p className="guide-title">别这样拍</p>
+            <div className="guide-dont">
+              <figure>
+                <img src={badBack} alt="反面示例：背影拍摄" loading="lazy" />
+                <figcaption>背面拍摄</figcaption>
+              </figure>
+              <figure>
+                <img src={badCrop} alt="反面示例：身体被裁掉" loading="lazy" />
+                <figcaption>身体被裁掉</figcaption>
+              </figure>
+            </div>
+            <p className="guide-credit">示例图片来自 Unsplash（免费授权）</p>
+          </details>
+        </div>
+      )}
 
       <div className="actions">
         {mode === 'file' && (phase === 'idle' || phase === 'error') && (
