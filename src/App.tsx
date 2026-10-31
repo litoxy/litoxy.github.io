@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { DesktopGate } from './components/DesktopGate'
 import { WeChatOpenTip } from './components/WeChatOpenTip'
 import { CapturePage } from './pages/CapturePage'
 import { HistoryPage } from './pages/HistoryPage'
@@ -45,6 +46,7 @@ export default function App() {
   return (
     <div className="app-shell">
       <WeChatOpenTip />
+      <DesktopGate />
       <main className="app-main">
         {route.name === 'capture' && (
           <CapturePage

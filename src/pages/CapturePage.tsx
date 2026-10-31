@@ -33,6 +33,34 @@ const MAX_SECONDS = 8
 const FILE_MAX_SECONDS = 12
 const FILE_SAMPLE_FPS = 10
 
+/** 按钮内联图标（随文字颜色） */
+function IconVideo() {
+  return (
+    <svg className="btn-ic" viewBox="0 0 24 24" aria-hidden>
+      <rect
+        x="2.5"
+        y="6"
+        width="13"
+        height="12"
+        rx="2.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <path d="M15.5 10.5 21 7.5v9l-5.5-3z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconRecord() {
+  return (
+    <svg className="btn-ic" viewBox="0 0 24 24" aria-hidden>
+      <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" strokeWidth="2" />
+      <circle cx="12" cy="12" r="4" fill="currentColor" />
+    </svg>
+  )
+}
+
 export function CapturePage({ onSaved, onOpenHistory }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const overlayRef = useRef<HTMLCanvasElement>(null)
@@ -521,6 +549,7 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
                 fileInputRef.current?.click()
               }}
             >
+              <IconVideo />
               选择视频
             </button>
             <button
@@ -531,6 +560,7 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
                 void startCamera()
               }}
             >
+              <IconRecord />
               直接录制
             </button>
           </>

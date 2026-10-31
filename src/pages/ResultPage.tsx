@@ -69,7 +69,7 @@ export function ResultPage({ session, onBack }: Props) {
           referenceName={runner.name}
         />
         <p className="radar-caption">
-          虚线 = {runner.name} 的轮廓 · 实心 = 你的轮廓。两形重叠即持平，<strong>凹处落后，凸处超出</strong>
+          每一轴越靠外代表该维度越接近顶级水平。虚线 = {runner.name} · 实心 = 你。<strong>实心凹进虚线的地方，就是差距所在</strong>
         </p>
         {runner.source && <p className="radar-source">数据来源：{runner.source}</p>}
       </div>
