@@ -65,7 +65,7 @@ def api(method, path, token, body=None):
     url = f"https://api.github.com/repos/{REPO}{path}"
     data = json.dumps(body).encode() if body is not None else None
     last_err = ""
-    for attempt in range(3):
+    for attempt in range(5):
         try:
             req = net.Request(url, method=method, data=data, headers={
                 "Authorization": f"token {token}",
@@ -78,9 +78,12 @@ def api(method, path, token, body=None):
                 return resp.status, (json.loads(raw) if raw else {})
         except net.HTTPError as e:
             last_err = e.read().decode()[:300]
-            if e.code in (401, 403, 500, 502, 503) and attempt < 2:
-                log(f"API {method} {path} -> {e.code}，重试…")
-                time.sleep(8 * (attempt + 1))
+            transient = e.code in (401, 403, 409, 429, 500, 502, 503, 504) or (
+                e.code == 400 and "malformed" in last_err.lower()
+            )
+            if transient and attempt < 4:
+                log(f"API {method} {path} -> {e.code}，重试…（{attempt + 1}/5）")
+                time.sleep(6 * (attempt + 1))
                 continue
             return e.code, last_err
     return 0, last_err

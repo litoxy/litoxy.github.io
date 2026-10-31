@@ -2,6 +2,8 @@ import * as poseDetection from '@tensorflow-models/pose-detection'
 import '@tensorflow/tfjs-backend-webgl'
 import * as tf from '@tensorflow/tfjs'
 import type { Keypoint, KeypointName, SkeletonFrame } from './types'
+import { ensureModelCached, registerModelRouter, MODEL_URL } from './modelCache'
+import type { ModelProgress } from './modelCache'
 
 let detectorPromise: Promise<poseDetection.PoseDetector> | null = null
 
@@ -21,16 +23,18 @@ async function initBackend(): Promise<void> {
   await tf.ready().catch(() => {})
 }
 
-export async function getDetector() {
+export async function getDetector(onProgress?: ModelProgress) {
   if (!detectorPromise) {
     detectorPromise = (async () => {
       await initBackend()
+      // 先把权重拉到本地缓存（带进度），再让 tfjs 从缓存读取
+      const cache = await ensureModelCached((l, t) => onProgress?.(l, t))
+      registerModelRouter(cache)
       return poseDetection.createDetector(
         poseDetection.SupportedModels.MoveNet,
         {
           modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
-          // 自托管权重（public/model/），不依赖 tfhub.dev，国内可直连
-          modelUrl: './model/movenet-lightning/model.json',
+          modelUrl: MODEL_URL, // cachemodel:// 协议，走上面的缓存 handler
         },
       )
     })().catch((e) => {
@@ -40,6 +44,11 @@ export async function getDetector() {
     })
   }
   return detectorPromise
+}
+
+// 测试钩子（Playwright 验证用，不影响生产）
+if (typeof window !== 'undefined') {
+  ;(window as unknown as Record<string, unknown>).__flGetDetector = getDetector
 }
 
 const NAME_MAP: Record<string, KeypointName> = {

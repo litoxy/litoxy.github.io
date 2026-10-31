@@ -61,6 +61,22 @@ function IconRecord() {
   )
 }
 
+function withTimeout<T>(p: Promise<T>, ms: number, msg: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(msg)), ms)
+    p.then(
+      (v) => {
+        clearTimeout(timer)
+        resolve(v)
+      },
+      (e) => {
+        clearTimeout(timer)
+        reject(e)
+      },
+    )
+  })
+}
+
 export function CapturePage({ onSaved, onOpenHistory }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const overlayRef = useRef<HTMLCanvasElement>(null)
@@ -83,6 +99,19 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
   const [elapsed, setElapsed] = useState(0)
   const [progress, setProgress] = useState(0)
   const [slide, setSlide] = useState(0)
+  const [modelPct, setModelPct] = useState<number | null>(null)
+
+  // 模型加载：带进度与超时，避免弱网下无限"准备中"
+  const loadDetector = () => {
+    setModelPct(0)
+    return withTimeout(
+      getDetector((loaded, total) =>
+        setModelPct(Math.min(99, Math.round((loaded / total) * 100))),
+      ),
+      45_000,
+      '模型加载超时，请检查网络后重试',
+    ).finally(() => setModelPct(null))
+  }
 
   const setPhaseBoth = (p: Phase) => {
     phaseRef.current = p
@@ -273,7 +302,7 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
     setPhaseBoth('loading')
     finishingRef.current = false
     try {
-      await getDetector()
+      await loadDetector()
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: false,
         video: {
@@ -343,11 +372,16 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
     video.playsInline = true
 
     try {
-      await getDetector()
+      await loadDetector()
       if (signal.aborted) return
       video.load()
-      const loaded = await waitVideoEvent(video, 'loadeddata', 8000)
-      if (!loaded) throw new Error('视频无法加载')
+      const loaded = await waitVideoEvent(video, 'loadeddata', 15000)
+      if (!loaded) {
+        const code = video.error?.code
+        throw new Error(
+          `视频无法加载${code ? `（错误码 ${code}）` : ''}，请换一段 MP4 视频再试`,
+        )
+      }
       if (signal.aborted) return
       if (!Number.isFinite(video.duration) || video.duration <= 0) {
         throw new Error('读不到视频时长')
@@ -567,7 +601,7 @@ export function CapturePage({ onSaved, onOpenHistory }: Props) {
         )}
         {phase === 'loading' && (
           <button type="button" className="btn primary" disabled>
-            准备中…
+            {modelPct === null ? '准备中…' : `加载模型 ${modelPct}%`}
           </button>
         )}
         {mode === 'live' && phase === 'ready' && (
